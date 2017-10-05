@@ -19,19 +19,19 @@ use std::path::Path;
 use sdl2::rect::Rect;
 use sdl2::pixels::{Color, PixelFormatEnum};
 use sdl2::render::{Renderer, Texture};
-use sdl2_image::LoadTexture;
-use sdl2_ttf::{Font, Sdl2TtfContext};
+use sdl2::image::LoadTexture;
+use sdl2::ttf::{Font, Sdl2TtfContext};
 
 use game::{Level, Position, Direction};
 
 /// The Drawer struct is responsible for drawing the game onto the screen.
-pub struct Drawer<'a> {
+pub struct Drawer<'a, 'b> {
     /// The underlying SDL renderer
     renderer: Renderer<'a>,
     /// The active tileset
     tileset: TileSetSwitch,
     /// The font used to display text
-    font: Font,
+    font: Font<'b>,
     /// The size of the screen in pixels
     screen_size: (u32, u32),
     /// The height of the status bar
@@ -48,9 +48,9 @@ enum StatusBarLocation {
     FlushRight,
 }
 
-impl<'a> Drawer<'a> {
+impl<'a, 'b> Drawer<'a, 'b> {
     /// Creates a new Drawer instance.
-    pub fn new(renderer: Renderer<'a>, ttf_context: &Sdl2TtfContext) -> Drawer<'a> {
+    pub fn new(renderer: Renderer<'a>, ttf_context: &'b Sdl2TtfContext) -> Drawer<'a, 'b> {
         let font = {
             let ttf = Path::new("assets/font/RujisHandwritingFontv.2.0.ttf");
             ttf_context.load_font(&ttf, 20).unwrap()
